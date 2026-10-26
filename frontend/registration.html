@@ -1,0 +1,100 @@
+<!-- registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voter Registration - Online Voting System</title>
+  <link rel="stylesheet" href="registration.css">
+</head>
+<body>
+  <header>
+    <h1>Government of India - Online Voting System</h1>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h2>Voter Registration</h2>
+      <form action="index.html" method="post">
+        <label for="voterid">Voter ID Number:</label>
+        <input type="text" id="voterid" name="voterid" required>
+
+        <label for="fullname">Full Name:</label>
+        <input type="text" id="fullname" name="fullname" required>
+
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="biometric">Upload Biometric Data (Simulated):</label>
+        <input type="file" id="biometric" name="biometric" accept=".jpg,.png,.pdf">
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Government of India - Election Commission</p>
+  </footer>
+   <script>
+    const form = document.getElementById('registrationForm');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // prevent page reload
+
+      const voterId = document.getElementById('voterid').value;
+      const fullName = document.getElementById('fullname').value;
+      const email = document.getElementById('email').value;
+      const dob = document.getElementById('dob').value;
+      const biometricFile = document.getElementById('biometric').files[0];
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const biometricData = reader.result || null; // base64 string or null
+
+        const payload = {
+          voterId,
+          fullName,
+          email,
+          dob,
+          biometricData
+        };
+
+        try {
+          const response = await fetch('http://localhost:9090/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            alert('Registration successful! Your voter ID: ' + result.voterId);
+            form.reset();
+          } else {
+            const error = await response.json();
+            alert('Registration failed: ' + error.message);
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Error connecting to server.');
+        }
+      };
+
+      if (biometricFile) {
+        reader.readAsDataURL(biometricFile);
+      } else {
+        reader.onload(); // send empty biometric
+      }
+    });
+  </script>
+</body>
+</html>

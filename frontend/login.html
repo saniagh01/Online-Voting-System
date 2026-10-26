@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            width: 350px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #222;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background: #1e90ff;
+            border: none;
+            color: white;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-login:hover {
+            background: #0d6efd;
+        }
+        .msg {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Voter Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="voterid">Voter ID</label>
+                <input type="text" id="voterid" required>
+            </div>
+            <div class="input-group">
+                <label for="dob">Date of Birth (YYYY-MM-DD)</label>
+                <input type="text" id="dob" required>
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+            <div class="msg" id="msg"></div>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let voterid = document.getElementById("voterid").value;
+        let dob = document.getElementById("dob").value;
+
+        let response = await fetch("http://localhost:9090/login", {
+            method: "POST",
+            body: new URLSearchParams({ voterid, dob })
+        });
+
+        let result = await response.text();
+        document.getElementById("msg").textContent = result;
+
+        // ✅ If backend returns success, redirect to Main Page
+        if (result.toLowerCase().includes("success")) {
+            alert("Login Successful!");
+            window.location.href = "main.html";  // ✅ Redirect to main page
+        }
+    });
+</script>
+
+
+</body>
+</html>

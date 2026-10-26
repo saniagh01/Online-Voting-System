@@ -1,0 +1,25 @@
+const BASE_URL = "http://localhost:9090"; // change if needed
+
+// ---- REGISTRATION API ----
+document.getElementById("registrationForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const voter = {
+    voterId: document.getElementById("voterId").value,
+    fullName: document.getElementById("fullName").value,
+    email: document.getElementById("email").value,
+    dob: document.getElementById("dob").value,
+    biometricData: document.getElementById("biometricData").value
+  };
+
+  let res = await fetch(`${BASE_URL}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(voter)
+  });
+
+  let data = await res.json();
+  document.getElementById("responseMessage").innerText = res.ok
+    ? "✅ Registration Successful!"
+    : "❌ " + data.message;
+});
